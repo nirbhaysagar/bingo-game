@@ -312,7 +312,7 @@ export default function GamePage() {
       {/* Nav */}
       <div className="nav-bar">
         <span className="nav-logo">BINGO</span>
-        <div className="flex items-center gap-12">
+        <div className="flex items-center gap-8" style={{ flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           <button
             className="btn btn-ghost btn-sm"
             onClick={() => {
@@ -326,7 +326,7 @@ export default function GamePage() {
             {isMuted ? '🔇' : '🔊'}
           </button>
           <span className="badge badge-green"><span className="pulse-dot" />LIVE</span>
-          {isManualMode && <span className="badge badge-yellow">🖐️ MANUAL MODE</span>}
+          {isManualMode && <span className="badge badge-yellow">🖐️ MANUAL</span>}
           <span className="badge badge-purple">Room: {game.room_code}</span>
         </div>
       </div>
