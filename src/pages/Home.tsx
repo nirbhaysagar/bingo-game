@@ -187,8 +187,14 @@ export default function Home() {
           {error && <div className="error-msg" style={{ padding: '8px 12px', fontSize: '0.8rem' }}>{error}</div>}
         </div>
 
-        {/* History link */}
-        <div style={{ textAlign: 'center', marginTop: 16 }}>
+        {/* History + Leaderboard links */}
+        <div className="flex items-center justify-center gap-12" style={{ marginTop: 16 }}>
+          <button
+            className="btn btn-ghost btn-sm"
+            onClick={() => navigate('/leaderboard')}
+          >
+            🏆 Leaderboard
+          </button>
           <button
             className="btn btn-ghost btn-sm"
             onClick={() => navigate('/history')}

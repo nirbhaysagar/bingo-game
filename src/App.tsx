@@ -5,6 +5,7 @@ import Lobby from './pages/Lobby'
 import GamePage from './pages/Game'
 import Winner from './pages/Winner'
 import History from './pages/History'
+import Leaderboard from './pages/Leaderboard'
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="/game/:roomCode" element={<GamePage />} />
         <Route path="/winner/:roomCode" element={<Winner />} />
         <Route path="/history" element={<History />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
