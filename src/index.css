@@ -1109,6 +1109,7 @@ h3 {
 .avatar-1 { background: rgba(255, 255, 255, 0.12); color: #dddddd; border: 1px solid rgba(255, 255, 255, 0.35); }
 .avatar-2 { background: rgba(255, 255, 255, 0.03); color: #888899; border: 1px solid rgba(255, 255, 255, 0.15); }
 .avatar-3 { background: rgba(255, 255, 255, 0.2); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.45); }
+.avatar-4 { background: rgba(255, 255, 255, 0.08); color: #bbeeaa; border: 1px solid rgba(255, 255, 255, 0.25); }
 
 /* ─── Scrollbar ─────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; }

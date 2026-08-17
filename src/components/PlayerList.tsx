@@ -8,7 +8,7 @@ interface PlayerListProps {
   targetLines?: number
 }
 
-const AVATAR_COLORS = ['avatar-0', 'avatar-1', 'avatar-2', 'avatar-3']
+const AVATAR_COLORS = ['avatar-0', 'avatar-1', 'avatar-2', 'avatar-3', 'avatar-4']
 
 export function PlayerList({ players, myPlayerId, hostId, targetLines = 5 }: PlayerListProps) {
   return (
@@ -20,7 +20,7 @@ export function PlayerList({ players, myPlayerId, hostId, targetLines = 5 }: Pla
 
         return (
           <div key={p.id} className="player-row">
-            <div className={`player-avatar ${AVATAR_COLORS[idx % 4]}`}>
+            <div className={`player-avatar ${AVATAR_COLORS[idx % 5]}`}>
               {p.player_name.charAt(0).toUpperCase()}
             </div>
             <span className={`player-name ${isMe ? 'you' : ''}`}>

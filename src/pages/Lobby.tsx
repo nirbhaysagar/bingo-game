@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase, type Game, type GamePlayer } from '../lib/supabase'
 import { getOrCreatePlayerId } from '../lib/bingo'
 
-const AVATAR_COLORS = ['avatar-0', 'avatar-1', 'avatar-2', 'avatar-3']
+const AVATAR_COLORS = ['avatar-0', 'avatar-1', 'avatar-2', 'avatar-3', 'avatar-4']
 
 export default function Lobby() {
   const { roomCode } = useParams<{ roomCode: string }>()
@@ -284,12 +284,12 @@ export default function Lobby() {
           {/* Players */}
           <div>
             <div className="section-title" style={{ marginBottom: 8 }}>
-              Players — {players.length} / 4
+              Players — {players.length} / 5
             </div>
             <div className="lobby-players">
               {players.map((p, idx) => (
                 <div key={p.id} className="lobby-player-row" style={{ padding: '10px 12px' }}>
-                  <div className={`player-avatar ${AVATAR_COLORS[idx % 4]}`} style={{ width: 28, height: 28, fontSize: '0.75rem' }}>
+                  <div className={`player-avatar ${AVATAR_COLORS[idx % 5]}`} style={{ width: 28, height: 28, fontSize: '0.75rem' }}>
                     {p.player_name.charAt(0).toUpperCase()}
                   </div>
                   <span style={{ fontWeight: 600, flex: 1, fontSize: '0.9rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -305,7 +305,7 @@ export default function Lobby() {
               ))}
 
               {/* Empty slots */}
-              {Array.from({ length: Math.max(0, 4 - players.length) }).map((_, i) => (
+              {Array.from({ length: Math.max(0, 5 - players.length) }).map((_, i) => (
                 <div key={`empty-${i}`} style={{
                   padding: '10px 12px',
                   borderRadius: 'var(--radius-md)',

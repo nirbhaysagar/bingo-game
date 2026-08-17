@@ -78,8 +78,8 @@ export default function Home() {
       .select('*', { count: 'exact', head: true })
       .eq('game_id', gameData.id)
 
-    if ((count ?? 0) >= 4) {
-      setError('This room is full (max 4 players).')
+    if ((count ?? 0) >= 5) {
+      setError('This room is full (max 5 players).')
       setLoading(null)
       return
     }
@@ -112,7 +112,7 @@ export default function Home() {
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: 20 }}>
           <div className="logo" style={{ fontSize: '2.5rem', letterSpacing: '0.2em' }}>BINGO</div>
-          <div className="logo-sub" style={{ fontSize: '0.75rem', marginTop: 4 }}>Play with friends · Up to 4 players</div>
+          <div className="logo-sub" style={{ fontSize: '0.75rem', marginTop: 4 }}>Play with friends · Up to 5 players</div>
         </div>
 
         {/* Card */}
