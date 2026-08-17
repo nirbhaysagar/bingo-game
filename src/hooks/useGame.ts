@@ -146,7 +146,7 @@ export function useGame(roomCode?: string): GameState & GameActions {
     // Only host performs the win-check write
     if (g.host_id !== playerId) return
 
-    const winner = playersRef.current.find((p) => checkWin(p.lines_count))
+    const winner = playersRef.current.find((p) => checkWin(p.lines_count, g.target_lines))
     if (!winner) return
 
     winCheckInProgress.current = true
@@ -183,7 +183,7 @@ export function useGame(roomCode?: string): GameState & GameActions {
   const createGame = useCallback(async (): Promise<string | null> => {
     setError(null)
     const roomCode = generateRoomCode()
-    const card = generateCard()
+    const card = generateCard(5) // Default if used from here
 
     const { data: gameData, error: gameErr } = await supabase
       .from('games')
@@ -233,8 +233,8 @@ export function useGame(roomCode?: string): GameState & GameActions {
         .select('*', { count: 'exact', head: true })
         .eq('game_id', gameData.id)
 
-      if ((count ?? 0) >= 4) {
-        setError('This room is full (max 4 players).')
+      if ((count ?? 0) >= 5) {
+        setError('This room is full (max 5 players).')
         return false
       }
 
@@ -247,7 +247,7 @@ export function useGame(roomCode?: string): GameState & GameActions {
         .single()
 
       if (!existing) {
-        const card = generateCard()
+        const card = generateCard(gameData.grid_size || 5)
         await supabase.from('game_players').insert({
           game_id: gameData.id,
           player_id: playerId,
@@ -271,7 +271,8 @@ export function useGame(roomCode?: string): GameState & GameActions {
     if (!g || g.status !== 'playing') return
 
     const called = new Set(g.called_numbers)
-    const remaining = Array.from({ length: 25 }, (_, i) => i + 1).filter((n) => !called.has(n))
+    const totalNumbers = g.grid_size ? g.grid_size * g.grid_size : 25
+    const remaining = Array.from({ length: totalNumbers }, (_, i) => i + 1).filter((n) => !called.has(n))
 
     if (remaining.length === 0) return
 
@@ -284,7 +285,7 @@ export function useGame(roomCode?: string): GameState & GameActions {
     // Update lines_count for all players
     const currentPlayers = playersRef.current
     for (const p of currentPlayers) {
-      const lines = countLines(p.card, newCalled)
+      const lines = countLines(p.card, newCalled, g.grid_size || 5)
       if (lines !== p.lines_count) {
         await supabase
           .from('game_players')
@@ -308,6 +309,7 @@ export function useGame(roomCode?: string): GameState & GameActions {
         host_id: playerId,
         target_lines: g.target_lines ?? 5,
         game_mode: g.game_mode ?? 'auto',
+        grid_size: g.grid_size ?? 5,
       })
       .select()
       .single()
@@ -320,7 +322,7 @@ export function useGame(roomCode?: string): GameState & GameActions {
         game_id: newGame.id,
         player_id: p.player_id,
         player_name: p.player_name,
-        card: generateCard(),
+        card: generateCard(newGame.grid_size || 5),
         lines_count: 0,
       })
     }

@@ -25,6 +25,7 @@ export interface Game {
   target_lines: number
   game_mode?: 'auto' | 'manual'
   current_turn_player_id?: string | null
+  grid_size: number
 }
 
 export interface GamePlayer {

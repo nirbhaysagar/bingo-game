@@ -67,7 +67,7 @@ export function BingoCard({
   }
 
   return (
-    <div className={`bingo-card ${gameMode === 'manual' && isMyTurn ? 'my-turn-card' : ''}`}>
+    <div className={`bingo-card grid-${card.length === 36 ? 6 : 5} ${gameMode === 'manual' && isMyTurn ? 'my-turn-card' : ''}`}>
       {card.map((num, idx) => {
         const isCalled      = calledSet.has(num)
         const isMarked      = markedSet.has(num)

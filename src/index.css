@@ -388,6 +388,10 @@ h3 {
   margin: 0 auto;
 }
 
+.bingo-card.grid-6 {
+  grid-template-columns: repeat(6, 1fr);
+}
+
 .bingo-cell {
   aspect-ratio: 1;
   display: flex;

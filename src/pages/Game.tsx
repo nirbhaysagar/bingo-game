@@ -155,7 +155,8 @@ export default function GamePage() {
     setCalling(true)
 
     const called    = new Set(g.called_numbers)
-    const remaining = Array.from({ length: 25 }, (_, i) => i + 1).filter((n) => !called.has(n))
+    const totalNumbers = g.grid_size ? g.grid_size * g.grid_size : 25
+    const remaining = Array.from({ length: totalNumbers }, (_, i) => i + 1).filter((n) => !called.has(n))
     if (remaining.length === 0) { setCalling(false); return }
 
     // Engine picks randomly — host just triggers it
@@ -197,7 +198,7 @@ export default function GamePage() {
     const myMarked = new Set(me.marked_numbers ?? [])
     if (!myMarked.has(num)) {
       const newMarked = [...(me.marked_numbers ?? []), num]
-      const newLines = countLines(me.card, newMarked)
+      const newLines = countLines(me.card, newMarked, g.grid_size || 5)
       if (newLines > me.lines_count) {
         playSuccess()
       } else {
@@ -243,7 +244,7 @@ export default function GamePage() {
 
     markingRef.current = true
     const newMarked = [...(me.marked_numbers ?? []), num]
-    const newLines  = countLines(me.card, newMarked)
+    const newLines  = countLines(me.card, newMarked, g.grid_size || 5)
 
     if (newLines > me.lines_count) {
       playSuccess()
@@ -283,7 +284,8 @@ export default function GamePage() {
   const isHost       = game.host_id === playerId
   const latestNumber = game.called_numbers[game.called_numbers.length - 1] ?? null
   const myLines      = myPlayer?.lines_count ?? 0
-  const numbersLeft  = 25 - game.called_numbers.length
+  const totalNumbers = game.grid_size ? game.grid_size * game.grid_size : 25
+  const numbersLeft  = totalNumbers - game.called_numbers.length
 
   const savedMode = roomCode ? sessionStorage.getItem(`bingo_mode_${roomCode.toUpperCase()}`) : null
   const isManualMode = game.game_mode === 'manual' || savedMode === 'manual'
@@ -362,7 +364,7 @@ export default function GamePage() {
 
           {/* Called numbers list */}
           <div className="flex-col flex-1 overflow-hidden" style={{ display: 'flex', minHeight: 0 }}>
-            <div className="section-title">Called Numbers ({game.called_numbers.length} / 25)</div>
+            <div className="section-title">Called Numbers ({game.called_numbers.length} / {totalNumbers})</div>
             <div className="dashboard-called-wrapper">
               <CalledNumbers numbers={game.called_numbers} />
             </div>

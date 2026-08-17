@@ -186,8 +186,9 @@ export default function Lobby() {
         <div style={{ textAlign: 'center', marginBottom: 16 }}>
           <div className="logo" style={{ fontSize: '1.8rem', letterSpacing: '0.2em' }}>BINGO</div>
           <h1 style={{ marginTop: 8, marginBottom: 4, fontSize: '1.4rem' }}>Game Lobby</h1>
-          <div className="text-muted text-sm">
-            {isHost ? 'Share the code with your friends' : 'Waiting for the host to start...'}
+          <div className="text-muted text-sm" style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <span>{isHost ? 'Share the code with your friends' : 'Waiting for the host to start...'}</span>
+            {game?.grid_size && <span>Grid Size: {game.grid_size}x{game.grid_size}</span>}
           </div>
         </div>
 
@@ -213,14 +214,14 @@ export default function Lobby() {
             <div className="section-title" style={{ marginBottom: 8 }}>Target to Win</div>
             {isHost ? (
               <div className="flex gap-8">
-                {[1, 3, 5].map((lines) => (
+                {(game?.grid_size === 6 ? [1, 3, 6] : [1, 3, 5]).map((lines) => (
                   <button
                     key={lines}
                     className={`btn btn-sm flex-1 ${game?.target_lines === lines ? 'btn-primary' : 'btn-secondary'}`}
                     onClick={() => handleTargetChange(lines)}
                     style={{ padding: '10px 14px', fontSize: '0.85rem' }}
                   >
-                    {lines === 5 ? '5 Lines (Full)' : `${lines} Line${lines !== 1 ? 's' : ''}`}
+                    {lines === (game?.grid_size === 6 ? 6 : 5) ? `${lines} Lines (Full)` : `${lines} Line${lines !== 1 ? 's' : ''}`}
                   </button>
                 ))}
               </div>
@@ -235,7 +236,7 @@ export default function Lobby() {
               }}>
                 🎯 First to complete{' '}
                 <span style={{ color: 'var(--accent)' }}>
-                  {game?.target_lines === 5 ? '5 Lines (Full Card)' : `${game?.target_lines} Line${game?.target_lines !== 1 ? 's' : ''}`}
+                  {game?.target_lines === (game?.grid_size === 6 ? 6 : 5) ? `${game?.target_lines} Lines (Full Card)` : `${game?.target_lines} Line${game?.target_lines !== 1 ? 's' : ''}`}
                 </span>{' '}
                 wins!
               </div>

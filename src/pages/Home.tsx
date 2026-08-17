@@ -8,6 +8,7 @@ export default function Home() {
   const navigate = useNavigate()
   const [name, setName] = useState(getPlayerName())
   const [joinCode, setJoinCode] = useState('')
+  const [gridSize, setGridSize] = useState<5 | 6>(5)
   const [loading, setLoading] = useState<'create' | 'join' | null>(null)
   const [error, setError] = useState('')
 
@@ -21,11 +22,11 @@ export default function Home() {
     setPlayerName(trimmed)
 
     const roomCode = generateRoomCode()
-    const card = generateCard()
+    const card = generateCard(gridSize)
 
     const { data: gameData, error: gameErr } = await supabase
       .from('games')
-      .insert({ room_code: roomCode, host_id: playerId })
+      .insert({ room_code: roomCode, host_id: playerId, grid_size: gridSize })
       .select()
       .single()
 
@@ -93,7 +94,7 @@ export default function Home() {
       .single()
 
     if (!existing) {
-      const card = generateCard()
+      const card = generateCard(gameData.grid_size || 5)
       await supabase.from('game_players').insert({
         game_id: gameData.id,
         player_id: playerId,
@@ -131,6 +132,29 @@ export default function Home() {
               onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
               style={{ padding: '12px 14px' }}
             />
+          </div>
+
+          {/* Grid Size */}
+          <div>
+            <label className="input-label" htmlFor="grid-size">Grid Size</label>
+            <div className="flex gap-8">
+              <button
+                type="button"
+                className={`btn btn-sm flex-1 ${gridSize === 5 ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={() => setGridSize(5)}
+                style={{ padding: '10px 12px', fontSize: '0.85rem' }}
+              >
+                5x5
+              </button>
+              <button
+                type="button"
+                className={`btn btn-sm flex-1 ${gridSize === 6 ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={() => setGridSize(6)}
+                style={{ padding: '10px 12px', fontSize: '0.85rem' }}
+              >
+                6x6
+              </button>
+            </div>
           </div>
 
           {/* Create */}
