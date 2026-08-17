@@ -8,6 +8,7 @@ import {
   checkWin,
   getOrCreatePlayerId,
   getPlayerName,
+  generateAuthenticCard,
 } from '../lib/bingo'
 
 interface GameState {
@@ -271,7 +272,7 @@ export function useGame(roomCode?: string): GameState & GameActions {
     if (!g || g.status !== 'playing') return
 
     const called = new Set(g.called_numbers)
-    const totalNumbers = g.grid_size ? g.grid_size * g.grid_size : 25
+    const totalNumbers = g.game_style === 'authentic' ? 75 : (g.grid_size ? g.grid_size * g.grid_size : 25)
     const remaining = Array.from({ length: totalNumbers }, (_, i) => i + 1).filter((n) => !called.has(n))
 
     if (remaining.length === 0) return
@@ -310,6 +311,7 @@ export function useGame(roomCode?: string): GameState & GameActions {
         target_lines: g.target_lines ?? 5,
         game_mode: g.game_mode ?? 'auto',
         grid_size: g.grid_size ?? 5,
+        game_style: g.game_style ?? 'simple',
       })
       .select()
       .single()
@@ -322,7 +324,7 @@ export function useGame(roomCode?: string): GameState & GameActions {
         game_id: newGame.id,
         player_id: p.player_id,
         player_name: p.player_name,
-        card: generateCard(newGame.grid_size || 5),
+        card: newGame.game_style === 'authentic' ? generateAuthenticCard() : generateCard(newGame.grid_size || 5),
         lines_count: 0,
       })
     }

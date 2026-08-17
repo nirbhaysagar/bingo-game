@@ -9,6 +9,7 @@ interface BingoCardProps {
   latestNumber?: number | null
   gameMode?: 'auto' | 'manual'
   isMyTurn?: boolean
+  isAuthentic?: boolean
   onMark?: (num: number) => void // called when player clicks a called cell to mark it
   onSelectNumber?: (num: number) => void // called when active player selects an uncalled cell on their turn
 }
@@ -20,12 +21,13 @@ export function BingoCard({
   latestNumber,
   gameMode = 'auto',
   isMyTurn = false,
+  isAuthentic = false,
   onMark,
   onSelectNumber,
 }: BingoCardProps) {
   const calledSet   = new Set(calledNumbers)
   const markedSet   = new Set(markedNumbers)
-  const highlighted = getHighlightedCells(card, markedNumbers) // lines from MARKED cells
+  const highlighted = getHighlightedCells(card, markedNumbers, isAuthentic ? 5 : (card.length === 36 ? 6 : 5)) // lines from MARKED cells
 
   // Track which cell indexes are currently wobbling
   const [wobbling, setWobbling] = useState<Set<number>>(new Set())
@@ -67,13 +69,31 @@ export function BingoCard({
   }
 
   return (
-    <div className={`bingo-card grid-${card.length === 36 ? 6 : 5} ${gameMode === 'manual' && isMyTurn ? 'my-turn-card' : ''}`}>
+    <div className={`bingo-card-container ${isAuthentic ? 'authentic-mode' : ''}`}>
+      {isAuthentic && (
+        <div className="bingo-header-row">
+          {['B', 'I', 'N', 'G', 'O'].map((l) => (
+            <div key={l} className="bingo-header-cell">{l}</div>
+          ))}
+        </div>
+      )}
+      <div className={`bingo-card grid-${card.length === 36 ? 6 : 5} ${gameMode === 'manual' && isMyTurn ? 'my-turn-card' : ''}`}>
       {card.map((num, idx) => {
-        const isCalled      = calledSet.has(num)
-        const isMarked      = markedSet.has(num)
+        const isFreeSpace   = num === 0
+        const isCalled      = isFreeSpace || calledSet.has(num)
+        const isMarked      = isFreeSpace || markedSet.has(num)
         const isHighlighted = highlighted.has(idx)
         const isLatest      = num === latestNumber
         const isWobbling    = wobbling.has(idx)
+
+        if (isFreeSpace) {
+          return (
+            <div key={idx} className={`bingo-cell free-space marked ${isHighlighted ? 'highlighted' : ''}`} title="Free Space!">
+              <span className="cell-num" style={{ fontSize: '1.5rem', marginBottom: -4 }}>★</span>
+              <span className="cell-mark" style={{ fontSize: '0.65rem', letterSpacing: '0.1em' }}>FREE</span>
+            </div>
+          )
+        }
 
         let className = 'bingo-cell'
         if (isHighlighted)       className += ' highlighted'
@@ -113,6 +133,7 @@ export function BingoCard({
           </div>
         )
       })}
+      </div>
     </div>
   )
 }

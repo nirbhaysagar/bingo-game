@@ -26,6 +26,7 @@ export interface Game {
   game_mode?: 'auto' | 'manual'
   current_turn_player_id?: string | null
   grid_size: number
+  game_style?: 'simple' | 'authentic'
 }
 
 export interface GamePlayer {

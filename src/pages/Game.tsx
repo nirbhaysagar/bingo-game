@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase, type Game, type GamePlayer } from '../lib/supabase'
-import { getOrCreatePlayerId, countLines } from '../lib/bingo'
+import { getOrCreatePlayerId, countLines, formatBingoNumber } from '../lib/bingo'
 import { BingoCard } from '../components/BingoCard'
 import { PlayerList } from '../components/PlayerList'
 import { CalledNumbers } from '../components/CalledNumbers'
@@ -356,7 +356,7 @@ export default function GamePage() {
               {isManualMode ? 'Last Called Number' : 'Current Number'}
             </div>
             {latestNumber ? (
-              <div className="current-number-value" key={latestNumber}>{latestNumber}</div>
+              <div className="current-number-value" key={latestNumber}>{formatBingoNumber(latestNumber, game.game_style === 'authentic')}</div>
             ) : (
               <div className="current-number-empty">—</div>
             )}
@@ -366,7 +366,7 @@ export default function GamePage() {
           <div className="flex-col flex-1 overflow-hidden" style={{ display: 'flex', minHeight: 0 }}>
             <div className="section-title">Called Numbers ({game.called_numbers.length} / {totalNumbers})</div>
             <div className="dashboard-called-wrapper">
-              <CalledNumbers numbers={game.called_numbers} />
+              <CalledNumbers numbers={game.called_numbers} isAuthentic={game.game_style === 'authentic'} />
             </div>
           </div>
 
@@ -422,7 +422,7 @@ export default function GamePage() {
               <div className="check-number-text">
                 <span className="check-icon">🎯</span>
                 <span>
-                  <strong>{lastPickerPlayer?.player_name ?? 'Opponent'}</strong> chose number <strong>{latestNumber}</strong>! Check your card and mark it!
+                  <strong>{lastPickerPlayer?.player_name ?? 'Opponent'}</strong> chose number <strong>{formatBingoNumber(latestNumber, game.game_style === 'authentic')}</strong>! Check your card and mark it!
                 </span>
               </div>
               <button
@@ -430,7 +430,7 @@ export default function GamePage() {
                 onClick={() => handleMark(latestNumber)}
                 style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
               >
-                ✓ Mark {latestNumber}
+                ✓ Mark {formatBingoNumber(latestNumber, game.game_style === 'authentic')}
               </button>
             </div>
           )}
@@ -459,6 +459,7 @@ export default function GamePage() {
               latestNumber={latestNumber}
               gameMode={game.game_mode}
               isMyTurn={isMyTurn}
+              isAuthentic={game.game_style === 'authentic'}
               onMark={handleMark}
               onSelectNumber={handleSelectNumber}
             />

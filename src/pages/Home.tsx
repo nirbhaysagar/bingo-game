@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getOrCreatePlayerId, getPlayerName, setPlayerName, generateRoomCode, generateCard } from '../lib/bingo'
+import { getOrCreatePlayerId, getPlayerName, setPlayerName, generateRoomCode, generateCard, generateAuthenticCard } from '../lib/bingo'
 import { supabase } from '../lib/supabase'
 
 
@@ -9,6 +9,7 @@ export default function Home() {
   const [name, setName] = useState(getPlayerName())
   const [joinCode, setJoinCode] = useState('')
   const [gridSize, setGridSize] = useState<5 | 6>(5)
+  const [gameStyle, setGameStyle] = useState<'simple' | 'authentic'>('simple')
   const [loading, setLoading] = useState<'create' | 'join' | null>(null)
   const [error, setError] = useState('')
 
@@ -22,11 +23,11 @@ export default function Home() {
     setPlayerName(trimmed)
 
     const roomCode = generateRoomCode()
-    const card = generateCard(gridSize)
+    const card = gameStyle === 'authentic' ? generateAuthenticCard() : generateCard(gridSize)
 
     const { data: gameData, error: gameErr } = await supabase
       .from('games')
-      .insert({ room_code: roomCode, host_id: playerId, grid_size: gridSize })
+      .insert({ room_code: roomCode, host_id: playerId, grid_size: gameStyle === 'authentic' ? 5 : gridSize, game_style: gameStyle })
       .select()
       .single()
 
@@ -94,7 +95,7 @@ export default function Home() {
       .single()
 
     if (!existing) {
-      const card = generateCard(gameData.grid_size || 5)
+      const card = gameData.game_style === 'authentic' ? generateAuthenticCard() : generateCard(gameData.grid_size || 5)
       await supabase.from('game_players').insert({
         game_id: gameData.id,
         player_id: playerId,
@@ -149,10 +150,33 @@ export default function Home() {
               <button
                 type="button"
                 className={`btn btn-sm flex-1 ${gridSize === 6 ? 'btn-primary' : 'btn-secondary'}`}
-                onClick={() => setGridSize(6)}
+                onClick={() => { setGridSize(6); setGameStyle('simple'); }}
                 style={{ padding: '10px 12px', fontSize: '0.85rem' }}
               >
                 6x6
+              </button>
+            </div>
+          </div>
+
+          {/* Game Style */}
+          <div>
+            <label className="input-label" htmlFor="game-style">Game Style</label>
+            <div className="flex gap-8">
+              <button
+                type="button"
+                className={`btn btn-sm flex-1 ${gameStyle === 'simple' ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={() => setGameStyle('simple')}
+                style={{ padding: '10px 12px', fontSize: '0.85rem' }}
+              >
+                Simple
+              </button>
+              <button
+                type="button"
+                className={`btn btn-sm flex-1 ${gameStyle === 'authentic' ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={() => { setGameStyle('authentic'); setGridSize(5); }}
+                style={{ padding: '10px 12px', fontSize: '0.85rem' }}
+              >
+                Authentic 75-Ball
               </button>
             </div>
           </div>

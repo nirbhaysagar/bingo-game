@@ -374,6 +374,33 @@ h3 {
   text-align: center;
 }
 
+/* ─── Authentic Bingo Header ────────────────────────────────────────────────── */
+.authentic-mode .bingo-header-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  max-width: 420px;
+  margin: 0 auto 6px auto;
+  padding: 0 16px;
+}
+
+.authentic-mode .bingo-header-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1.2rem, 5vw, 1.8rem);
+  font-weight: 900;
+  color: var(--accent);
+  text-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+}
+
+.free-space {
+  background: rgba(99, 102, 241, 0.15) !important;
+  border-color: rgba(99, 102, 241, 0.4) !important;
+  color: var(--accent);
+  flex-direction: column;
+}
+
 /* ─── Bingo Card ────────────────────────────────────────────────────────────── */
 .bingo-card {
   display: grid;

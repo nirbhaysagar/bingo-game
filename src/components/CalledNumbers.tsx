@@ -1,9 +1,12 @@
 
+import { formatBingoNumber } from '../lib/bingo'
+
 interface CalledNumbersProps {
   numbers: number[]
+  isAuthentic?: boolean
 }
 
-export function CalledNumbers({ numbers }: CalledNumbersProps) {
+export function CalledNumbers({ numbers, isAuthentic }: CalledNumbersProps) {
 
   return (
     <div className="called-numbers-list">
@@ -16,7 +19,7 @@ export function CalledNumbers({ numbers }: CalledNumbersProps) {
             className={`called-number-chip ${idx === 0 ? 'latest' : ''}`}
             title={`Called ${numbers.indexOf(n) + 1}${['st','nd','rd'][numbers.indexOf(n)] || 'th'}`}
           >
-            {n}
+            {formatBingoNumber(n, isAuthentic)}
           </div>
         ))
       )}
