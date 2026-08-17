@@ -193,7 +193,8 @@ export function useGame(roomCode?: string): GameState & GameActions {
       .single()
 
     if (gameErr || !gameData) {
-      setError('Failed to create game. Try again.')
+      console.error(gameErr)
+      setError(`Failed to create game: ${gameErr?.message || 'Unknown error'}. Try again.`)
       return null
     }
 
