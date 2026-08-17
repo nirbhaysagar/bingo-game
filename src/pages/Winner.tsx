@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Confetti from 'react-confetti'
 import { supabase, type Game, type GamePlayer } from '../lib/supabase'
-import { getOrCreatePlayerId, generateCard, generateRoomCode } from '../lib/bingo'
+import { getOrCreatePlayerId, generateCard, generateAuthenticCard, generateRoomCode } from '../lib/bingo'
 import { BingoCard } from '../components/BingoCard'
 import { playVictory } from '../lib/audio'
 
@@ -99,7 +99,14 @@ export default function Winner() {
     const newRoomCode = generateRoomCode()
     const { data: newGame, error: gameErr } = await supabase
       .from('games')
-      .insert({ room_code: newRoomCode, host_id: playerId })
+      .insert({
+        room_code: newRoomCode,
+        host_id: playerId,
+        grid_size: game.grid_size || 5,
+        target_lines: game.target_lines || 5,
+        game_mode: game.game_mode || 'auto',
+        game_style: game.game_style || 'simple',
+      })
       .select()
       .single()
 
@@ -110,7 +117,7 @@ export default function Winner() {
         game_id: newGame.id,
         player_id: p.player_id,
         player_name: p.player_name,
-        card: generateCard(),
+        card: newGame.game_style === 'authentic' ? generateAuthenticCard() : generateCard(newGame.grid_size || 5),
         lines_count: 0,
         marked_numbers: [],
       })
